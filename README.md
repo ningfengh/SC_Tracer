@@ -1,6 +1,6 @@
 # SC Tracer
 
-![icon](http://example.com/logo.png)
+![icon](icon.png)
 
 **1/14/2016**
 
