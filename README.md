@@ -14,6 +14,6 @@ Key features:
 * Indirect illumination by distribute ray tracing and photon map
 * Caustic by direct visualization of photon map
 * OpenMP multithread for the ray tracing part
-
+* CUDA C acceleration for ray tracing (in cuda folder)
 
 ![Result](result.png)
