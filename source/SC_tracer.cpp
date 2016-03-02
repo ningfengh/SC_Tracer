@@ -24,8 +24,13 @@ using namespace std;
 
 int main(int argc, char *argv[]){
 
-	int w=1000, h=1000; // # samples 
-	float fov = 20.0;
+
+	if (argc!=3) {
+		cout<<"Syntax: SC_Tracer input_file output_file"<<endl;
+		exit(1);
+	}
+	int w=200, h=200; // # samples 
+	float fov = 40.0;
     float aspectratio = w/h;
 	float angle = tan(0.5*fov*M_PI/180.0);
 
@@ -39,7 +44,7 @@ int main(int argc, char *argv[]){
 		-0.31, -0.71, 0.106
 	};	
 
-	float angle_x = 25;
+	float angle_x = 0;
 	float Rx[3][3] =
     {
 		{1,0,0},
@@ -49,7 +54,7 @@ int main(int argc, char *argv[]){
 	
 	vector<Triangle> surfaces = parse(argv[1]);
 	vector<Light> lights;
-/*
+
 	Light light1, light2;
 	
 	light1.pos = Vec(1.6,2.749,10.75);
@@ -59,12 +64,16 @@ int main(int argc, char *argv[]){
 	light1.n_x = 9;
 	light1.n_y = 9;
 	
-	lights.push_back(light1); */
+	lights.push_back(light1); 
 
+	float total_area = 1.44;
+	float light_area[]={1.44};
 
+/*
 	Light light1, light2;
 	float total_area;
 	float light_area[]={100,100};
+	
 	light1.pos = Vec(0,7.749,10.75);
 	light1.color = Vec(1,1,1);
 	light1.x_vec = Vec(10.0,0,0);
@@ -81,16 +90,20 @@ int main(int argc, char *argv[]){
 	
 	lights.push_back(light1);
 	lights.push_back(light2);
+*/
+
 	
-	total_area = 10*10 + 10*10;
+	//total_area = 10*10 + 10*10;
 	
 	visualize_light(lights,surfaces);
 
 	vector<Sphere> bound;
-	Sphere diamond(Vec(0,-1.9233,10.75),1.107);
+	//Sphere diamond(Vec(0,-1.9233,10.75),1.107);
+	
+	Sphere diamond(Vec(0,-0.75,10.75), 2.1);
 	bound.push_back(diamond);
 
-	int n_photons = 1;
+	int n_photons = 1000000;
 	int n_photons_caustic = 1000000;
 	Photon_map pmap_r(n_photons),pmap_g(n_photons),pmap_b(n_photons) ;
 	Photon_map pmap_caustic_r(n_photons_caustic),pmap_caustic_g(n_photons_caustic),pmap_caustic_b(n_photons_caustic) ;
@@ -107,7 +120,7 @@ int main(int argc, char *argv[]){
 			float r1=2*M_PI*myrand(), r2=myrand(), r2s=sqrt(r2); 
 			Vec w=nl, u=((fabs(w.x)>.1?Vec(0,1,0):Vec(1,0,0))%w).norm(), v=w%u; 
 			Vec d = (u*cos(r1)*r2s + v*sin(r1)*r2s + w*sqrt(1-r2)).norm();
-			Vec color(10,10,10);
+			Vec color(15,15,15);
 			photon_tracing(pmap_r,pos,d,surfaces,color,0,2.40);
 		}
 
@@ -122,7 +135,7 @@ int main(int argc, char *argv[]){
 			float r1=2*M_PI*myrand(), r2=myrand(), r2s=sqrt(r2); 
 			Vec w=nl, u=((fabs(w.x)>.1?Vec(0,1,0):Vec(1,0,0))%w).norm(), v=w%u; 
 			Vec d = (u*cos(r1)*r2s + v*sin(r1)*r2s + w*sqrt(1-r2)).norm();
-			Vec color(20,20,20);
+			Vec color(1,1,1);
 			photon_tracing_caustic(pmap_caustic_r,pos,d,surfaces,color,0,false, 2.40, bound);
 		}
 
@@ -137,7 +150,7 @@ int main(int argc, char *argv[]){
 			float r1=2*M_PI*myrand(), r2=myrand(), r2s=sqrt(r2); 
 			Vec w=nl, u=((fabs(w.x)>.1?Vec(0,1,0):Vec(1,0,0))%w).norm(), v=w%u; 
 			Vec d = (u*cos(r1)*r2s + v*sin(r1)*r2s + w*sqrt(1-r2)).norm();
-			Vec color(10,10,10);
+			Vec color(15,15,15);
 			photon_tracing(pmap_g,pos,d,surfaces,color,0,2.43);
 		}
 
@@ -152,7 +165,7 @@ int main(int argc, char *argv[]){
 			float r1=2*M_PI*myrand(), r2=myrand(), r2s=sqrt(r2); 
 			Vec w=nl, u=((fabs(w.x)>.1?Vec(0,1,0):Vec(1,0,0))%w).norm(), v=w%u; 
 			Vec d = (u*cos(r1)*r2s + v*sin(r1)*r2s + w*sqrt(1-r2)).norm();
-			Vec color(20,20,20);
+			Vec color(1,1,1);
 			photon_tracing_caustic(pmap_caustic_g,pos,d,surfaces,color,0,false, 2.43, bound);
 		}
 
@@ -168,7 +181,7 @@ int main(int argc, char *argv[]){
 			float r1=2*M_PI*myrand(), r2=myrand(), r2s=sqrt(r2); 
 			Vec w=nl, u=((fabs(w.x)>.1?Vec(0,1,0):Vec(1,0,0))%w).norm(), v=w%u; 
 			Vec d = (u*cos(r1)*r2s + v*sin(r1)*r2s + w*sqrt(1-r2)).norm();
-			Vec color(10,10,10);
+			Vec color(15,15,15);
 			photon_tracing(pmap_b,pos,d,surfaces,color,0,2.46);
 		}
 
@@ -182,7 +195,7 @@ int main(int argc, char *argv[]){
 			float r1=2*M_PI*myrand(), r2=myrand(), r2s=sqrt(r2); 
 			Vec w=nl, u=((fabs(w.x)>.1?Vec(0,1,0):Vec(1,0,0))%w).norm(), v=w%u; 
 			Vec d = (u*cos(r1)*r2s + v*sin(r1)*r2s + w*sqrt(1-r2)).norm();
-			Vec color(10,10,10);
+			Vec color(1,1,1);
 			photon_tracing_caustic(pmap_caustic_b,pos,d,surfaces,color,0,false, 2.46, bound);
 		}
 
@@ -229,8 +242,8 @@ int main(int argc, char *argv[]){
 				dr.z = 1;
 				dr.norm();	
 				dr.matMul(Rx);		
-				//Vec dr_origin(0,0,0);
-				Vec dr_origin = dr*9+Vec(-0.1,3,0);
+				Vec dr_origin(0,0,0);
+				//Vec dr_origin = dr*9+Vec(-0.1,3,0);
 				output_color = output_color+(Vec(1,0,0).mult(raytrace(pmap_r,pmap_caustic_r,dr_origin,dr,surfaces,lights,0,2.40))
 										   + Vec(0,1,0).mult(raytrace(pmap_g,pmap_caustic_g,dr_origin,dr,surfaces,lights,0,2.43))
 										   + Vec(0,0,1).mult(raytrace(pmap_b,pmap_caustic_b,dr_origin,dr,surfaces,lights,0,2.46)))*AAFilter[aa][2];

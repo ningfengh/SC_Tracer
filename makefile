@@ -1,7 +1,7 @@
 IDIR = ./include
-CC=icpc
+CC=g++
 LFLAGS=-I$(IDIR) -fopenmp
-CFLAGS=-I$(IDIR) -std=c++11 -fast -fopenmp
+CFLAGS=-I$(IDIR) -std=c++11 -O3 -fopenmp
 SDIR=./source
 ODIR=./obj
 

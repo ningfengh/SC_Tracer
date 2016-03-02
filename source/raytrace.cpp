@@ -84,19 +84,25 @@ Vec raytrace(
 	if (++depth>20) return obj.emissionColor; //R.R. 
  
 	if (obj.token == 'L'){
+		//return Vec(0,0,0);
 		return obj.emissionColor;
 	}
 	else if (obj.token == 'D' || obj.token == 'G'){                  // Ideal DIFFUSE reflection 
-		Vec col;
+		Vec col(0,0,0);
 
-	    //direct visualization of the photon map
+
+/****************   Direct visualization of Caustic ******************/
+
 		float color[3];
 		float pos[3]={origin_new.x,origin_new.y,origin_new.z};
 		float normal[3] = {n.x, n.y, n.z};
 		pmap_caustic.irradiance_estimate(color,pos,normal,0.1,100);
 		col = Vec(color[0],color[1],color[2]);
+
+/*********************************************************************/
+
 	
- /***************   Global illumination   ****************************
+ /***************   Global illumination   ****************************/
 		int nsamps = 200;
 		for (int i = 0; i<nsamps ; i++)
 		{
